@@ -1,25 +1,33 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faArrowRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import LoaderComp from "./Loader.jsx";
 
-export default function Recipe({ ingredients }) {
+export default function Recipe({ ingredients, setIsLoading, isLoading }) {
   const [aiRecipe, setAiRecipe] = useState(null);
+
   // API Call
   async function generateRecipe() {
-    const res = await fetch("/api/gemini", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ingredients: ingredients,
-      }),
-    });
+    if (isLoading) return; //ignore extra clicks
+    setIsLoading(true); // loading spinner
 
-    const recipe = await res.json();
+    try {
+      const res = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ingredients: ingredients,
+        }),
+      });
 
-    setAiRecipe(recipe);
-    console.log(recipe);
+      const recipe = await res.json();
+      setAiRecipe(recipe);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
   }
-
   // API Call
 
   return (
@@ -31,9 +39,15 @@ export default function Recipe({ ingredients }) {
         </button>
       </div>
 
+      {isLoading ? (
+        <div className="loading">
+          <LoaderComp />
+        </div>
+      ) : null}
+
       {/* title and prep time */}
-      {aiRecipe ? (
-        <div className="parent-div">
+      {!isLoading && aiRecipe ? (
+        <div className="parent-div recipe-animate">
           <div className="recipe-title">
             <h4>{aiRecipe.title}</h4>
             <p className="recipe-time">

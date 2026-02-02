@@ -6,6 +6,7 @@ import Recipe from "./Recipe";
 
 function App() {
   const [ingredients, setIngredients] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   console.log(ingredients);
 
   return (
@@ -28,7 +29,11 @@ function App() {
       {/* input section */}
       <Input ingredients={ingredients} setIngredients={setIngredients} />
 
-      <Recipe ingredients={ingredients} />
+      <Recipe
+        ingredients={ingredients}
+        setIsLoading={setIsLoading}
+        isLoading={isLoading}
+      />
     </>
   );
 }
