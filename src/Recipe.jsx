@@ -1,13 +1,49 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faArrowRotateLeft } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import {
+  faHeart,
+  faArrowRotateLeft,
+  faThumbsUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import LoaderComp from "./Loader.jsx";
 
 export default function Recipe({ ingredients, setIsLoading, isLoading }) {
   const [aiRecipe, setAiRecipe] = useState(null);
+  const [isSaved, setIsSaved] = useState(false); // for changing hear to thumb
+
+  // at first component load,it logs the recipe in console log
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("favourites")) || [];
+    console.log("fav recipes", saved);
+  });
+
+  // Save to local Storage
+  function handleSaveRecipe() {
+    if (!aiRecipe) return;
+
+    // check existing favourites so there is no repeat,parse and then return array of not
+    const existing = JSON.parse(localStorage.getItem("favourites")) || [];
+
+    // now preventing duplicates by using title by looping
+    const alreadySaved = existing.some(
+      (recipe) => recipe.title === aiRecipe.title,
+    );
+
+    // if already saved return true then we stop this function as a whole and also flip isSaved
+    if (alreadySaved) {
+      setIsSaved(true);
+      return;
+    }
+
+    // now we add recipe after doing all those checks
+    const updatedFavourites = [...existing, aiRecipe];
+    localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
+    setIsSaved(true);
+  }
 
   // API Call
   async function generateRecipe() {
+    setIsSaved(false);
     if (isLoading) return; //ignore extra clicks
     setIsLoading(true); // loading spinner
 
@@ -86,12 +122,15 @@ export default function Recipe({ ingredients, setIsLoading, isLoading }) {
 
           {/* fav btn and regen recipe */}
           <div className="save-regen-container">
-            <button className="save-btn">
-              <FontAwesomeIcon className="red-heart" icon={faHeart} />
-              Save to Favorites
+            <button className="save-btn" onClick={handleSaveRecipe}>
+              <FontAwesomeIcon
+                className={isSaved ? "" : "red-heart"}
+                icon={isSaved ? faThumbsUp : faHeart}
+              />
+              {isSaved ? "Saved to Favorites" : "Save to Favorites"}
             </button>
 
-            <button className="regen-btn">
+            <button onClick={generateRecipe} className="regen-btn">
               <FontAwesomeIcon icon={faArrowRotateLeft} />
               Regenerate Recipe
             </button>
