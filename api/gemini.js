@@ -24,13 +24,18 @@ Schema:
   "prepTime": number,
   "ingredients": string[],
   "steps": string[],
-  "funFact": string
+  "funFact": string,
+  "ignored": string,
+  "noRecipe": Boolean
 }
 
 Rules:
 - funFact must be 1–2 short sentences
 - funFact must be historically or culturally related to the dish
 - Do not mention modern brands or dates unless relevant
+- If ignoring some items in ${ingredients.join(", ")} Then mention them here with a very short reason why at ignored. Generate recipe with rest of items if possible
+- If ${ingredients.join(", ")} are not food items then return again a ignored reason and rest of things as N/A and NoRecipe as true
+ 
 
 Create a recipe using: ${ingredients.join(", ")}
 Only use ingredients at hand unless more are strictly required.

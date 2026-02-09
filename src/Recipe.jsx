@@ -12,10 +12,11 @@ export default function Recipe({ ingredients, setIsLoading, isLoading }) {
   const [isSaved, setIsSaved] = useState(false); // for changing hear to thumb
 
   // at first component load,it logs the recipe in console log
-  useEffect(() => {
+  (useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("favourites")) || [];
-    console.log("fav recipes", saved);
-  });
+    // console.log("fav recipes", saved);
+  }),
+    []);
 
   // Save to local Storage
   function handleSaveRecipe() {
@@ -89,6 +90,13 @@ export default function Recipe({ ingredients, setIsLoading, isLoading }) {
             <p className="recipe-time">
               Prep Time: <span>{aiRecipe.prepTime} Minutes</span>
             </p>
+
+            {/* items ignored */}
+            {aiRecipe.ignored ? (
+              <div className="ignored-items">
+                <p>Items Ignored: {aiRecipe.ignored}</p>
+              </div>
+            ) : null}
           </div>
 
           {/* ingredients and instructions */}
@@ -122,7 +130,11 @@ export default function Recipe({ ingredients, setIsLoading, isLoading }) {
 
           {/* fav btn and regen recipe */}
           <div className="save-regen-container">
-            <button className="save-btn" onClick={handleSaveRecipe}>
+            <button
+              disabled={aiRecipe.noRecipe}
+              className="save-btn"
+              onClick={handleSaveRecipe}
+            >
               <FontAwesomeIcon
                 className={isSaved ? "" : "red-heart"}
                 icon={isSaved ? faThumbsUp : faHeart}
@@ -130,7 +142,11 @@ export default function Recipe({ ingredients, setIsLoading, isLoading }) {
               {isSaved ? "Saved to Favorites" : "Save to Favorites"}
             </button>
 
-            <button onClick={generateRecipe} className="regen-btn">
+            <button
+              disabled={aiRecipe.noRecipe}
+              onClick={generateRecipe}
+              className="regen-btn"
+            >
               <FontAwesomeIcon icon={faArrowRotateLeft} />
               Regenerate Recipe
             </button>

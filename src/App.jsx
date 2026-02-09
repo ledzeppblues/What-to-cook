@@ -1,21 +1,27 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faL } from "@fortawesome/free-solid-svg-icons";
 import Input from "./Input";
 import Recipe from "./Recipe";
+import Favourites from "./Favourites";
 
 function App() {
   const [ingredients, setIngredients] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadIsFavourite, setLoadIsFavourite] = useState(false);
   console.log(ingredients);
+
+  function toggleFavPage() {
+    setLoadIsFavourite((prev) => !prev);
+  }
 
   return (
     <>
       <header>
         <div className="fav-btn">
-          <button className="btn-fav">
+          <button onClick={toggleFavPage} className="btn-fav">
             <FontAwesomeIcon className="blk-heart" icon={faHeart} />
-            Favortites
+            {loadIsFavourite ? "Home" : "Favortites"}
           </button>
         </div>
 
@@ -26,14 +32,18 @@ function App() {
         </div>
       </header>
 
-      {/* input section */}
-      <Input ingredients={ingredients} setIngredients={setIngredients} />
-
-      <Recipe
-        ingredients={ingredients}
-        setIsLoading={setIsLoading}
-        isLoading={isLoading}
-      />
+      {loadIsFavourite ? (
+        <Favourites />
+      ) : (
+        <>
+          <Input ingredients={ingredients} setIngredients={setIngredients} />
+          <Recipe
+            ingredients={ingredients}
+            setIsLoading={setIsLoading}
+            isLoading={isLoading}
+          />
+        </>
+      )}
     </>
   );
 }

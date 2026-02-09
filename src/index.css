@@ -270,6 +270,10 @@ header {
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
+.parent-div-fav {
+  margin-top: 1.25rem;
+}
+
 .recipe-title {
   color: #4b4e5a;
   padding-top: 0.75rem;
@@ -471,4 +475,24 @@ ul li {
     opacity: 1;
     transform: translate(0) scale(1);
   }
+}
+
+.ignored-items {
+  font-family: "Varela Round", sans-serif;
+  font-size: 0.7rem;
+  color: #8a4b1e;
+  background-color: #fff1e4;
+  border-left: 3px solid #e28a42;
+  border-radius: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  display: inline-block;
+  margin-right: 0.4375rem;
+}
+
+.ignored-items p {
+  margin: 0;
+}
+
+.save-btn-fav-page {
+  margin: 0.3125rem;
 }
